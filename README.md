@@ -2,6 +2,9 @@ This repository is a sort of "plugin" for [denovogear](https://github.com/denovo
 It adds the `mutmap` command to `dng`, which allows the generation of an HTML
 file which contains an interactive visualization.
 
+The word "mutmap" is short for "mutation map". The intent of this tool is to
+help visualize ("map") the locations of mutations in a pedigree.
+
 # Installation
 
 Copy everything in this repository (except this README file) into the
