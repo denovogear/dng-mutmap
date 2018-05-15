@@ -1,14 +1,21 @@
-(function() {
+// eslint exceptions
+//
+/* global require */
+/* exported pedParser */
+
+var pedParser = (function() {
   "use strict";
 
   function parsePedigreeFile(fileText) {
 
-    var newickParser = require('biojs-io-newick');
+    var newickParser = require("biojs-io-newick");
 
     var entries = [];
 
-    var lines = fileText.split('\n');
-    for (var line of lines) {
+    var lines = fileText.split("\n");
+
+    for (var index = 0; index < lines.length; index++) {
+      var line = lines[index];
 
       if (line.length === 0) {
         continue;
@@ -17,18 +24,18 @@
       var row = line.split("\t");
       var entry = {};
       entry.familyId = Number(row[0]);
-      entry.individualId = Number(row[1]);
+      entry.individualId = String(row[1]);
 
-      var fatherId = Number(row[2]);
-      if (fatherId === 0) {
+      var fatherId = String(row[2]);
+      if (fatherId === "0") {
         entry.fatherId = undefined;
       }
       else {
         entry.fatherId = fatherId;
       }
 
-      var motherId = Number(row[3]);
-      if (motherId === 0) {
+      var motherId = String(row[3]);
+      if (motherId === "0") {
         entry.motherId = undefined;
       }
       else {
@@ -37,10 +44,10 @@
 
       var sex = Number(row[4]);
       if (sex === 1) {
-        entry.sex = 'male';
+        entry.sex = "male";
       }
       else if (sex === 2) {
-        entry.sex = 'female';
+        entry.sex = "female";
       }
       else {
         entry.sex = undefined;
@@ -69,5 +76,8 @@
     return "(" + row + ")";
   }
 
-  module.exports.parsePedigreeFile = parsePedigreeFile;
+  return {
+    parsePedigreeFile: parsePedigreeFile
+  };
+
 }());

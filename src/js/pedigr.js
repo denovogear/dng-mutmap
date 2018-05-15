@@ -1,17 +1,24 @@
-(function() {
+// eslint exceptions
+//
+/* exported pedigr */
+
+var pedigr = (function() {
   "use strict";
 
-  function PedigreeGraph() {
+  var PedigreeGraph = function() {
     this.persons = {};
     this.marriages = [];
     this.parentageLinks = {};
   };
 
   PedigreeGraph.prototype.getPerson = function(id) {
+    if (!this.persons[id]) {
+      throw "getPerson: id " + id + " not found";
+    }
     return this.persons[id];
   };
 
-  PedigreeGraph.prototype.getPersons = function(query) {
+  PedigreeGraph.prototype.getPersons = function() {
     var persons = [];
     for (var key in this.persons) {
       persons.push(this.persons[key]);
@@ -34,7 +41,7 @@
     return graph;
   };
 
-  function Person(attr) {
+  var Person = function(attr) {
     this.id = attr.id;
     this.sex = attr.sex;
     //this.father = attr.father;
@@ -49,10 +56,13 @@
   };
 
   Person.prototype.getParentageLink = function() {
+    if (!this.parentageLink) {
+      throw "getParentageLink: no parentage link exists";
+    }
     return this.parentageLink;
   };
 
-  function PersonBuilder(id) {
+  var PersonBuilder = function(id) {
     this._id = id;
     this._sex = undefined;
     //this._father = undefined;
@@ -66,7 +76,7 @@
   PersonBuilder.prototype.sex = function(sex) {
     this._sex = sex;
     return this;
-  }
+  };
 
   PersonBuilder.prototype.parentageLink = function(parentageLink) {
     this._parentageLink = parentageLink;
@@ -117,13 +127,12 @@
   }
 
   Marriage.prototype.addSpouse = function(spouse) {
-    if (spouse.sex === 'male') {
-      var link = MarriageLink.createMarriageLink(this, spouse);
+    var link = MarriageLink.createMarriageLink(this, spouse);
+    if (spouse.sex === "male") {
       this.fatherLink = link;
       spouse.marriageLink = link;
     }
     else {
-      var link = MarriageLink.createMarriageLink(this, spouse);
       this.motherLink =  link;
       spouse.marriageLink = link;
     }
@@ -152,7 +161,7 @@
   };
 
   MarriageBuilder.prototype.spouse = function(spouse) {
-    if (spouse.sex === 'male') {
+    if (spouse.sex === "male") {
       this._father = spouse;
     }
     else {
@@ -190,7 +199,7 @@
     marriage.addSpouse(this._mother);
     marriage.childLinks = [];
     return marriage;
-  }
+  };
 
   function MarriageLink(marriage, spouse) {
     this.marriage = marriage;
@@ -215,8 +224,12 @@
     this.data = data;
   };
 
+  ParentageLink.prototype.getData = function() {
+    return this.data;
+  };
 
-  module.exports = {
+
+  return {
     PedigreeGraph: PedigreeGraph,
     PersonBuilder: PersonBuilder,
     MarriageBuilder: MarriageBuilder
